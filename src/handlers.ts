@@ -195,6 +195,12 @@ export async function handleComponent(
   if (kind === "sel") {
     const mode = Number(args[0]);
     const userIds = i.data!.values ?? [];
+    // 捏造防止: 自分が参加した対局のみ登録可能
+    if (!userIds.includes(interactionUser(i).id)) {
+      return ephemeral(
+        "⚠️ 対局の登録は対局者本人のみ可能です。自分を含めた対局者を選択してください。"
+      );
+    }
     const resolved = i.data!.resolved;
     const players = userIds.map((id) => {
       const user = resolved?.users?.[id];
@@ -338,7 +344,11 @@ export async function handleModal(i: Interaction, env: Env): Promise<Response> {
         title: `🀄 対局結果を登録しました — ${MODE_LABEL[mode]}`,
         description: lines.join("\n"),
         color: COLOR,
-        footer: { text: `対局 #${gameId} • レートは登録後の値` },
+        footer: {
+          text: `対局 #${gameId} • 登録者: ${
+            names.get(interactionUser(i).id) ?? "不明"
+          } • レートは登録後の値`,
+        },
       },
     ],
     components: [
@@ -541,7 +551,7 @@ function helpResponse(): Response {
           {
             name: "/対局登録",
             value:
-              "四麻・三麻を選び、対局者を選択 → 素点を入力して対局を記録します。登録直後なら 🗑️ ボタンで取消できます。",
+              "四麻・三麻を選び、対局者を選択 → 素点を入力して対局を記録します。登録できるのは対局者本人のみで、登録直後なら 🗑️ ボタンで取消できます。",
           },
           {
             name: "/成績 [user]",
