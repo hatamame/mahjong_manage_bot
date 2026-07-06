@@ -1,0 +1,14 @@
+# Cloudflare Workers 設定
+name = "discord-mahjong"
+main = "src/index.ts"
+compatibility_date = "2026-06-01"
+
+# `wrangler d1 create mahjong` の出力で database_id を置き換えてください
+[[d1_databases]]
+binding = "DB"
+database_name = "mahjong"
+database_id = "7cae006e-e8c9-40a4-9a48-ddc9e44ccd0c"
+
+[vars]
+# Discord Developer Portal > General Information > Public Key
+DISCORD_PUBLIC_KEY = "91d237ecad5e9460a8114414a3fcdb5ea76d479d514e8c24ad541ceaf5871208"
